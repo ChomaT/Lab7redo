@@ -15,10 +15,14 @@
 
 using namespace std;
 
+
+
+
+//Signal class definition
 class Signal{
 	public:
 		//double *data;
-                vector<double> data;
+        vector<double> data;
 		int length;
 		double max;
 		double avg;
@@ -40,45 +44,20 @@ class Signal{
 
 
 
+
+//default constructor
 Signal::Signal(){
 	length = 0;
 	max = 0;
 	avg = 0;
-        vector <double> data;
-
-//    int i = 0;
-//    double sum = 0;
-//
-//
-//	ifstream fpointer;
-//	fpointer.open("Raw_data_01.txt", ios::in);
-//	if (fpointer.is_open())
-//	{
-//            fpointer >> length >> max;
-//            //data = new double[length];
-//            vector <double> data(length);
-//            while(!fpointer.eof())
-//                    {
-//
-//                        fpointer >> data[i];
-//                        i++;
-//                    }
-//                    fpointer.close();
-//	}
-//
-//	//Define avg
-//	for (i = 0; i < length; i++)
-//	{
-//		sum = sum + data[i];
-//	}
-//	avg = sum / (double) length;
-
 }
 
 
 
+
+//parametric integer constructor
 Signal::Signal(int L){
-	int i = 0;
+	double i = 0;
 	double sum = 0;
 	length = 0;
 	max = 0;
@@ -91,28 +70,26 @@ Signal::Signal(int L){
 	{
 		sprintf(str,"Raw_data_0%d.txt",L);
 		fname = str;
-
+		cout<<"Opening File: "<<str<<endl;
 		fpointer.open(fname.c_str(), ios::in);
 	}
 	else
 	{
 		sprintf(str,"Raw_data_%d.txt",L);
 		fname = str;
+		cout<<"Opening File: "<<str<<endl;
 		fpointer.open(fname.c_str(), ios::in);
 	}
 
 	if (fpointer.is_open())
 	{
 		fpointer >> length >> max;
-		//data = new double[length];
-		vector <double> data(length);
-
 		while(!fpointer.eof())
 		{
-			fpointer >> data[i];
+			fpointer >> i;
+			data.push_back(i);
 			i++;
 		}
-
 		fpointer.close();
 	}
 
@@ -123,12 +100,22 @@ Signal::Signal(int L){
 	}
 	avg = sum / (double) length;
 
+	max = data[0];
+	for(i = 0; i < length; i++)
+	{
+		if(data[i] > max)
+		{
+			max = data[i];
+		}
+	}
 }
 
 
 
+
+//Parametric string constructor
 Signal::Signal(string instr){
-	int i = 0;
+	double i = 0;
 	double sum = 0;
 	length = 0;
 	max = 0;
@@ -142,12 +129,11 @@ Signal::Signal(string instr){
 	if (fpointer.is_open())
 	{
 		fpointer >> length >> max;
-		//data = new double[length];
-		vector <double> data(length);
 		while(!fpointer.eof())
 		{
 
-			fpointer >> data[i];
+			fpointer >> i;
+			data.push_back(i);
 			i++;
 		}
 		fpointer.close();
@@ -160,10 +146,25 @@ Signal::Signal(string instr){
 	}
 	avg = sum / (double) length;
 
+	max = data[0];
+	for(i = 0; i < length; i++)
+	{
+		if(data[i] > max)
+		{
+			max = data[i];
+		}
+	}
 }
+
+
+
+
+//deconstructor
 Signal::~Signal(){
 	//delete[] data;	// no need to delete vector
 }
+
+
 
 
 //operator overload +
@@ -184,40 +185,17 @@ void Signal :: operator+(double factor)
         avg = sum / (double) length;
 
         //Redefine max
-        max = max + factor;
+    	max = data[0];
+    	for(int i = 0; i < length; i++)
+    	{
+    		if(data[i] > max)
+    		{
+    			max = data[i];
+    		}
+    	}
 }
 
 
-//void Signal::Offset()
-//{
-//	int i, factor;
-//	double sum;
-//
-//	cout << "Input an offset factor: ";
-//	cin >> factor;
-//	if(factor <= 1000 && factor >= -1000)
-//	{
-//		for(i = 0; i < length; i++)
-//		{
-//			data[i] = data[i] + factor;
-//		}
-//
-//		//Redefine avg
-//		for (i = 0; i < length; i++)
-//		{
-//			sum = sum + data[i];
-//		}
-//		avg = sum / (double) length;
-//
-//		//Redefine max
-//		max = max + factor;
-//
-//	}
-//        else
-//        {
-//			cout<<"Input error: please choose a value between -1000 and 1000."<<endl;
-//        }
-//}
 
 
 //operator overload *
@@ -238,100 +216,44 @@ void Signal :: operator*(double factor)
         this->avg = sum / (double) this->length;
 
         //Redefine max
-        this->max = this->max * factor;
+    	this->max = this->data[0];
+    	for(int i = 0; i < this->length; i++)
+    	{
+    		if(this->data[i] > this->max)
+    		{
+    			this->max = this->data[i];
+    		}
+    	}
 }
 
 
-//void Signal::Scale()
-//{
-//	int i, factor;
-//	double sum;
-//
-//	cout << "Input a scaling factor: ";
-//	cin >> factor;
-//
-//    if(factor <= 1000 && factor >= -1000)
-//    {
-//		for(i = 0; i < length; i++)
-//		{
-//			data[i] = data[i] * factor;
-//		}
-//
-//		//Redefine avg
-//		for (i = 0; i < length; i++)
-//		{
-//			sum = sum + data[i];
-//		}
-//		avg = sum / (double) length;
-//
-//		//Redefine max
-//		max = max * factor;
-//    }
-//    else
-//    {
-//		cout<<"Input error: please choose a value between -1000 and 1000."<<endl;
-//    }
-//}
 
 
+//Centering function
 void Signal::Center()
 {
     int factor = -avg;
-    this+factor;
-
-//	int i;
-//	double sum = 0;
-//
-//	for(i = 0; i < length; i++)
-//	{
-//		data[i] = data[i] - avg;
-//	}
-//
-//	//Redefine avg
-//	for (i = 0; i < length; i++)
-//	{
-//		sum = sum + data[i];
-//	}
-//	avg = sum / (double) length;
-//
-//	//Redefine max
-//	max = data[0];
-//
-//	for (i = 0; i < length; i++)
-//	{
-//		if (data[i] > max)
-//			max = data[i];
-//	}
+    (*this)+factor;
 }
 
 
 
 
-
+//Normalization function
 void Signal::Normalize()
 {
     double factor = (1/max);
     (*this)*factor;
-//	int i;
-//	double sum;
-//
-//	for(i = 0; i < length; i++)
-//	{
-//			data[i] = data[i] / max;
-//	}
-//
-//	//Redefine avg
-//	for (i = 0; i < length; i++)
-//	{
-//		sum = sum + data[i];
-//	}
-//	avg = sum / (double) length;
-//
-//	//Redefine max
-//	max = 1;
-}void Signal::Offset()
+
+}
+
+
+
+
+//Offset function
+void Signal::Offset()
 {
-	int i, factor;
+	int i = 0, factor;
 	double sum;
 
 	cout << "Input an offset factor: ";
@@ -350,8 +272,15 @@ void Signal::Normalize()
 		}
 		avg = sum / (double) length;
 
-		//Redefine max
-		max = max + factor;
+        //Redefine max
+    	max = data[0];
+    	for(int i = 0; i < length; i++)
+    	{
+    		if(data[i] > max)
+    		{
+    			max = data[i];
+    		}
+    	}
 
 	}
         else
@@ -361,11 +290,18 @@ void Signal::Normalize()
 }
 
 
+
+
+//Signal Info printing function
 void Signal::Sig_info()
 {
 	cout<<"Length: " << length << endl << "Max: " << max << endl << "Average: " << avg << endl;
 }
 
+
+
+
+//Saving file function
 void Signal::Save_file(string outstr)
 {
 	fstream outstream;
@@ -387,28 +323,41 @@ void Signal::Save_file(string outstr)
 }
 
 
+
+//+ operator non-member overwrite
 Signal operator+(const Signal &sig1, const Signal &sig2)
 {
 	Signal sum;
+	double sum2 = 0;
+	double temp;
 
 	if(sig1.length == sig2.length)
 	{
+		sum.length = sig1.length;
+
 		//add signal data
 		for(int i : sig1.data)
 		{
-			sum.data[i] = sig1.data[i] + sig2.data[i];
+			temp = sig1.data[i] + sig2.data[i];
+			sum.data.push_back(temp);
+			cout<<"sum data[i] = "<<sum.data[i]<<endl;
 		}
-		//determine maximum
-		if(sig1.max > sig2.max)
-		{
-			sum.max = sig1.max;
-		}
-		else
-		{
-			sum.max = sig2.max;
-		}
-		//determine average
-		sum.avg = (sig1.avg + sig2.avg) / sum.max;
+        //Redefine max
+    	sum.max = sum.data[0];
+    	for(int i = 0; i < sum.length; i++)
+    	{
+    		if(sum.data[i] > sum.max)
+    		{
+    			sum.max = sum.data[i];
+    		}
+    	}
+
+    	//Redefine avg
+    	for (int i = 0; i < sum.length; i++)
+        {
+            sum2 = sum2 + sum.data[i];
+        }
+        sum.avg = sum2 / (double) sum.length;
 	}
 	else
 	{
@@ -419,14 +368,16 @@ Signal operator+(const Signal &sig1, const Signal &sig2)
 }
 
 
+
+//Main function
 int main(int argc, char *argv[]) {
 	int fnum, choice = 0;
 	double factor;
 	string fname, outname;
 	Signal *sig2;
-	Signal sig3;
-	Signal sig4;
+	Signal sig3(1);
 
+	//Command Line analysis
 	if(argc == 1)
 		{
 			sig2 = new Signal();
@@ -469,7 +420,7 @@ int main(int argc, char *argv[]) {
 			//sig2->Offset();
 			cout<<"Input an offset value: ";
 			cin>>factor;
-			sig3+factor;
+			(*sig2)+factor;
 
 		}
 		else if(choice == 2)
@@ -477,29 +428,29 @@ int main(int argc, char *argv[]) {
 			//sig2->Scale();
 			cout<<"Input a scaling factor: ";
 			cin>>factor;
-			(sig3)*factor;
+			(*sig2)*factor;
 		}
 		else if(choice == 3)
 		{
-			sig3.Center();
+			sig2->Center();
 		}
 		else if(choice == 4)
 		{
-			sig3.Normalize();
+			sig2->Normalize();
 		}
 		else if(choice == 5)
 		{
-			sig3.Sig_info();
+			sig2->Sig_info();
 		}
 		else if(choice == 6)
 		{
 			cout << "Please input desired output name without extension: ";
 			cin >> outname;
-			sig3.Save_file(outname);
+			sig2->Save_file(outname);
 		}
 		else if(choice == 7)
 		{
-			sig3 + sig4;
+			*sig2 = (*sig2) + sig3;
 		}
 		else if(choice != 8)
 		{
