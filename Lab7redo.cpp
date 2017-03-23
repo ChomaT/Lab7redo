@@ -311,7 +311,7 @@ void Signal::Center()
 void Signal::Normalize()
 {
     double factor = (1/max);
-    this*factor;
+    (*this)*factor;
 //	int i;
 //	double sum;
 //
@@ -477,7 +477,7 @@ int main(int argc, char *argv[]) {
 			//sig2->Scale();
 			cout<<"Input a scaling factor: ";
 			cin>>factor;
-			sig3*factor;
+			(sig3)*factor;
 		}
 		else if(choice == 3)
 		{
